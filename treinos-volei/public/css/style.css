@@ -1,0 +1,52 @@
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .card {
+            width: fit-content;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            padding: 40px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-align: center;
+            margin: 0;
+        }
+
+        .wrapper {
+            display: flex;
+            gap: 32px;
+        }
+
+        form {
+            width: 384px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        input {
+            height: 40px;
+            padding: 0 12px;
+        }
+
+        button {
+            width: 100%;
+            height: 40px;
+            cursor: pointer;
+        }
