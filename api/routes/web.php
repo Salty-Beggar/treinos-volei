@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TreinoController;
 use App\Http\Controllers\userController;
 use Illuminate\Support\Facades\Route;
 
@@ -9,3 +10,5 @@ Route::get('/criaConta', function () {return view('criaConta');});
 
 Route::post('/login', [userController::class, 'login']);
 Route::post('/register', [userController::class, 'register']);
+
+Route::resource('/treinos', TreinoController::class);
