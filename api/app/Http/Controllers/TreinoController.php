@@ -12,6 +12,16 @@ class TreinoController extends Controller
         return response()->json($treinos);
     }
 
+    public function show($id) {
+        $user = auth()->user();
+        $treino = Treino::find($id);
+
+        if (!$treino) {return response()->json(['message' => 'Treino não encontrado.'], 404);}
+        if ($treino->user_id !== $user->id) { return response()->json(['message' => 'Você não tem permissão para acessar este treino.'], 403);}
+        
+        return response()->json($treino);
+    }
+
     public function create(Request $request) {
         $user = auth()->user();
         $treino = new Treino();
