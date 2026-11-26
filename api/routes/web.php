@@ -11,4 +11,7 @@ Route::get('/criaConta', function () {return view('criaConta');});
 Route::post('/login', [userController::class, 'login']);
 Route::post('/register', [userController::class, 'register']);
 
-Route::resource('/treinos', TreinoController::class);
+Route::get('/treinos', [TreinoController::class, 'index']);
+Route::post('/create', [TreinoController::class, 'create']);
+Route::put('/update/{id}', [TreinoController::class, 'update']);
+Route::delete('/delete/{id}', [TreinoController::class, 'delete']);
