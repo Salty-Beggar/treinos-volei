@@ -15,4 +15,6 @@ class Treino extends Model
         'video',
     ];
     
+    protected $table='treino';
+    public $timestamps = false;
 }
