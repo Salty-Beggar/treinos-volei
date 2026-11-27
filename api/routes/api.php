@@ -14,3 +14,7 @@ use Illuminate\Support\Facades\Route;
 //   DELETE /api/historico/{id}        apaga um registro
 Route::apiResource('historico', HistoricoTreinoController::class)
     ->missing(fn () => response()->json(['message' => 'Registro do histórico não encontrado.'], 404));
+use App\Http\Controllers\TreinoController;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/treinos', [TreinoController::class, 'index']);
