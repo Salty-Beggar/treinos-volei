@@ -17,7 +17,10 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        $this->call(TreinoSeeder::class);
+        $this->call([
+            BibliotecaTreinosSeeder::class,
+            TreinoSeeder::class,
+        ]);
 
         // User::factory()->create([
         //     'name' => 'Test User',

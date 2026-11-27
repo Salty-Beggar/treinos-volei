@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('series');
             $table->integer('intervalo');
             $table->integer('repeticoes');
-            $table->integer('video');
+            $table->string('video');
 
             $table->timestamps();
         });
