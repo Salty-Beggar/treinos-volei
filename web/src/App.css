@@ -523,6 +523,77 @@
 .training-stats strong { color: var(--ink); font-size: 12px; margin-top: 3px; }
 .start-button { width: 100%; height: 48px; font-size: 12px; }
 
+.add-training-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 190px;
+  height: 48px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--lime);
+  color: var(--ink);
+  padding: 0 16px;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(180, 211, 70, .16);
+  transition: transform .2s, background .2s, box-shadow .2s;
+}
+.add-training-button svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.add-training-button:hover { background: #d4ff67; transform: translateY(-2px); box-shadow: 0 12px 24px rgba(180, 211, 70, .24); }
+
+.training-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(23, 28, 25, .48);
+  backdrop-filter: blur(5px);
+}
+.training-modal {
+  width: min(620px, 100%);
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 24px 70px rgba(23, 28, 25, .22);
+}
+.training-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #edf0ea;
+  padding: 22px 24px 18px;
+}
+.training-modal-header p { margin: 0 0 4px; color: #98b92e; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.4px; }
+.training-modal-header h2 { margin: 0; font-size: 24px; letter-spacing: -.8px; }
+.modal-close-button { width: 38px; height: 38px; border: 1px solid #dde1da; border-radius: 50%; background: #fff; color: #737a75; font-size: 24px; line-height: 1; cursor: pointer; }
+.modal-close-button:hover { background: #f1f3ee; color: var(--ink); }
+.training-form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 22px 24px 24px; }
+.training-form label { display: flex; flex-direction: column; gap: 7px; color: #555d58; font-size: 12px; font-weight: 800; }
+.training-form-wide { grid-column: 1 / -1; }
+.training-form input, .training-form select, .training-form textarea { width: 100%; border: 1px solid #d7ddd5; border-radius: 9px; background: #fff; color: var(--ink); outline: none; padding: 0 12px; font-family: inherit; transition: border-color .2s, box-shadow .2s; }
+.training-form input, .training-form select { height: 48px; }
+.training-form textarea { resize: vertical; padding-top: 11px; }
+.training-form input:focus, .training-form select:focus, .training-form textarea:focus { border-color: #98b92e; box-shadow: 0 0 0 3px rgba(200,255,61,.16); }
+.training-form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px; }
+.modal-cancel-button, .modal-save-button { height: 46px; border-radius: 9px; padding: 0 18px; font-size: 12px; font-weight: 900; cursor: pointer; }
+.modal-cancel-button { border: 1px solid #d7ddd5; background: #fff; color: #656d68; }
+.modal-save-button { border: 0; background: var(--lime); color: var(--ink); }
+.modal-cancel-button:hover { background: #f1f3ee; }
+.modal-save-button:hover { background: #d4ff67; }
+
 @media (max-width: 980px) {
   .auth-shell { grid-template-columns: 38% 62%; }
   .brand-copy h1 { font-size: 48px; letter-spacing: -3px; }
@@ -544,16 +615,24 @@
   .logout-button span { display: none; }
   .logout-button { width: 42px; justify-content: center; padding: 0; }
   .dashboard-content { padding: 34px 16px 48px; }
-  .welcome-row { align-items: flex-start; gap: 20px; }
+  .welcome-row { align-items: flex-start; gap: 20px; flex-wrap: wrap; }
+  .welcome-row > div:first-child { width: 100%; }
   .welcome-row h1 { font-size: 38px; }
   .progress-card { min-width: auto; }
   .progress-card > div:last-child { display: none; }
   .training-grid { grid-template-columns: 1fr; }
   .training-card h3 { min-height: auto; }
+  .add-training-button { min-width: 190px; }
+  .training-modal-backdrop { align-items: end; padding: 0; }
+  .training-modal { width: 100%; max-height: 92vh; border-radius: 18px 18px 0 0; }
+  .training-form { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 430px) {
   .welcome-row { margin-bottom: 36px; }
   .welcome-row > div:first-child > p:last-child { max-width: 220px; line-height: 1.5; }
   .progress-card { border: 0; background: transparent; padding: 0; }
+  .add-training-button { min-width: 170px; }
+  .training-modal-header { padding: 18px 16px 14px; }
+  .training-form { padding: 18px 16px 20px; }
 }

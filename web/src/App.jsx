@@ -62,6 +62,10 @@ function App() {
   const [treinosLoading, setTreinosLoading] = useState(true)
   const [treinosError, setTreinosError] = useState('')
   const [treinosNotice, setTreinosNotice] = useState('')
+  const [isAddTreinoOpen, setIsAddTreinoOpen] = useState(false)
+  const [newTreino, setNewTreino] = useState({
+    nome: '', categoria: 'Fundamentos', tempo: 20, series: 3, repeticoes: 10, intervalo: 60, descricao: '', video: ''
+  })
 
   useEffect(() => {
     let isActive = true
@@ -194,6 +198,50 @@ function App() {
     return usersDB.find((user) => user.id === userId)?.name || 'Central de Treinos'
   }
 
+const handleAddTreino = (event) => {
+  event.preventDefault();
+
+  const userId = currentUser?.id || 'demo';
+
+  const treinoAdicionado = {
+    id: `local-${Date.now()}`,
+    user_id: userId,
+    nome: newTreino.nome.trim(),
+    categoria: newTreino.categoria,
+    tempo: Number(newTreino.tempo),
+    series: Number(newTreino.series),
+    repeticoes: Number(newTreino.repeticoes),
+    intervalo: Number(newTreino.intervalo),
+    descricao: newTreino.descricao.trim(),
+    video: newTreino.video.trim(),
+  };
+
+  setTreinos((prevTreinos) => {
+    const nextTreinos = [treinoAdicionado, ...prevTreinos];
+    const storageKey = `@TreinoVolei:treinos_demo:${userId}`;
+    localStorage.setItem(storageKey, JSON.stringify(nextTreinos));
+    return nextTreinos;
+  });
+
+  setTreinosError('');
+  setIsAddTreinoOpen(false);
+  setNewTreino({
+    nome: '',
+    categoria: 'Fundamentos',
+    tempo: 20,
+    series: 3,
+    repeticoes: 10,
+    intervalo: 60,
+    descricao: '',
+    video: '',
+  });
+
+  setTreinosNotice('Treino adicionado com sucesso!');
+  setTimeout(() => {
+    setTreinosNotice('');
+  }, 3000);
+};
+
   if (isAuthenticated) {
     const typeLabel = currentUser.type === 'player' ? 'Atleta' : 'Coach'
     return (
@@ -241,38 +289,69 @@ function App() {
             </section>
           ) : (
             <>
-          <div className="welcome-row">
-            <div><p className="eyebrow">Seu plano de hoje</p><h1>Olá, {currentUser.name.split(' ')[0]}.</h1><p>Escolha um treino e continue evoluindo.</p></div>
-            <div className="progress-card"><div className="progress-ring"><span>3</span></div><div><strong>Meta semanal</strong><small>3 de 5 treinos</small></div></div>
-          </div>
-          <div className="section-heading"><h2>Treinos disponíveis</h2><span>{treinos.length} exercícios</span></div>
-          {treinosError && <div className="list-message list-message--warning" role="status">{treinosError}</div>}
-          {treinosNotice && <div className="list-message list-message--info" role="status">{treinosNotice}</div>}
-          {treinosLoading ? (
-            <div className="list-message" role="status">Carregando treinos...</div>
-          ) : treinos.length === 0 ? (
-            <div className="list-message" role="status">Nenhum treino disponível no momento.</div>
-          ) : (
-            <div className="training-grid">
-              {treinos.map((treino, index) => (
-                <article className="training-card" key={treino.id}>
-                  <div className="card-top"><span className="card-number">{String(index + 1).padStart(2, '0')}</span><span className="category">{treino.categoria || 'Treino'}</span></div>
-                  <h3>{treino.nome}</h3>
-                  <p>Criado por {treino.creator?.name || getCreatorName(treino.user_id)}</p>
-                  <div className="training-stats">
-                    <div><Icon name="clock" /><span>Duração<strong>{treino.tempo} min</strong></span></div>
-                    <div><Icon name="series" /><span>Séries<strong>{treino.series}x</strong></span></div>
-                    <div><Icon name="repeat" /><span>Repetições<strong>{treino.repeticoes}</strong></span></div>
-                    <div><Icon name="timer" /><span>Intervalo<strong>{treino.intervalo}s</strong></span></div>
-                  </div>
-                  <button type="button" className="start-button" onClick={() => setSelectedTreino(treino)}><span>Iniciar treino</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5" /></svg></button>
-                </article>
-              ))}
-            </div>
-          )}
+              <div className="welcome-row">
+                <div><p className="eyebrow">Seu plano de hoje</p><h1>Olá, {currentUser.name.split(' ')[0]}.</h1><p>Escolha um treino e continue evoluindo.</p></div>
+                <button type="button" className="add-training-button" onClick={() => setIsAddTreinoOpen(true)}>
+                  <span>Adicionar treino</span>
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 5v14M5 12h14" />
+                  </svg>
+                </button>
+                <div className="progress-card"><div className="progress-ring"><span>3</span></div><div><strong>Meta semanal</strong><small>3 de 5 treinos</small></div></div>
+              </div>
+              <div className="section-heading"><h2>Treinos disponíveis</h2><span>{treinos.length} exercícios</span></div>
+              {treinosError && <div className="list-message list-message--warning" role="status">{treinosError}</div>}
+              {treinosNotice && <div className="list-message list-message--info" role="status">{treinosNotice}</div>}
+              {treinosLoading ? (
+                <div className="list-message" role="status">Carregando treinos...</div>
+              ) : treinos.length === 0 ? (
+                <div className="list-message" role="status">Nenhum treino disponível no momento.</div>
+              ) : (
+                <div className="training-grid">
+                  {treinos.map((treino, index) => (
+                    <article className="training-card" key={treino.id}>
+                      <div className="card-top"><span className="card-number">{String(index + 1).padStart(2, '0')}</span><span className="category">{treino.categoria || 'Treino'}</span></div>
+                      <h3>{treino.nome}</h3>
+                      <p>Criado por {treino.creator?.name || getCreatorName(treino.user_id)}</p>
+                      <div className="training-stats">
+                        <div><Icon name="clock" /><span>Duração<strong>{treino.tempo} min</strong></span></div>
+                        <div><Icon name="series" /><span>Séries<strong>{treino.series}x</strong></span></div>
+                        <div><Icon name="repeat" /><span>Repetições<strong>{treino.repeticoes}</strong></span></div>
+                        <div><Icon name="timer" /><span>Intervalo<strong>{treino.intervalo}s</strong></span></div>
+                      </div>
+                      <button type="button" className="start-button" onClick={() => setSelectedTreino(treino)}><span>Iniciar treino</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5" /></svg></button>
+                    </article>
+                  ))}
+                </div>
+              )}
             </>
           )}
         </section>
+
+        {isAddTreinoOpen && (
+          <div className="training-modal-backdrop" role="presentation" onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setIsAddTreinoOpen(false)
+          }}>
+            <section className="training-modal" role="dialog" aria-modal="true" aria-labelledby="add-training-title">
+              <div className="training-modal-header">
+                <div><p>Novo treino</p><h2 id="add-training-title">Adicionar treino</h2></div>
+                <button type="button" className="modal-close-button" onClick={() => setIsAddTreinoOpen(false)} aria-label="Fechar">
+                  <svg width="16" height="16" viewBox="0 0 16 16" stroke="currentColor" strokeWidth="2"><path d="M2 2l12 12M14 2L2 14" /></svg>
+                </button>
+              </div>
+              <form className="training-form" onSubmit={handleAddTreino}>
+                <label className="training-form-wide"><span>Nome do treino</span><input value={newTreino.nome} onChange={(event) => setNewTreino({ ...newTreino, nome: event.target.value })} placeholder="Ex.: Aquecimento e saque" required /></label>
+                <label className="training-form-wide"><span>Categoria</span><select value={newTreino.categoria} onChange={(event) => setNewTreino({ ...newTreino, categoria: event.target.value })}><option>Fundamentos</option><option>Levantamento</option><option>Saque</option><option>Ataque</option><option>Bloqueio</option><option>Defesa</option></select></label>
+                <label><span>Duração (min)</span><input type="number" min="1" value={newTreino.tempo} onChange={(event) => setNewTreino({ ...newTreino, tempo: event.target.value })} required /></label>
+                <label><span>Séries</span><input type="number" min="1" value={newTreino.series} onChange={(event) => setNewTreino({ ...newTreino, series: event.target.value })} required /></label>
+                <label><span>Repetições</span><input type="number" min="1" value={newTreino.repeticoes} onChange={(event) => setNewTreino({ ...newTreino, repeticoes: event.target.value })} required /></label>
+                <label><span>Intervalo (s)</span><input type="number" min="0" value={newTreino.intervalo} onChange={(event) => setNewTreino({ ...newTreino, intervalo: event.target.value })} required /></label>
+                <label className="training-form-wide"><span>Descrição</span><textarea value={newTreino.descricao} onChange={(event) => setNewTreino({ ...newTreino, descricao: event.target.value })} placeholder="Descreva os objetivos ou orientações do treino" rows="3" /></label>
+                <div className="training-form-actions training-form-wide"><button type="button" className="modal-cancel-button" onClick={() => setIsAddTreinoOpen(false)}>Cancelar</button><button type="submit" className="modal-save-button">Adicionar treino</button></div>
+              </form>
+            </section>
+          </div>
+        )}
       </main>
     )
   }
