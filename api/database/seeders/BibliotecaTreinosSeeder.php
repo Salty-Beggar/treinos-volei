@@ -6,6 +6,7 @@ use App\Models\Treino;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 /**
@@ -69,14 +70,22 @@ class BibliotecaTreinosSeeder extends Seeder
     /**
      * Busca o usuário "Sistema" ou cria se ainda não existir.
      * A senha é aleatória porque ninguém deve fazer login com ele.
+     *
+     * O projeto tem bancos com nomes de coluna diferentes
+     * (nome/senha no Banco.sql, name/password nas migrations),
+     * então o seeder confere quais colunas existem antes de criar.
      */
     private function usuarioSistema(): User
     {
+        $tabela = (new User)->getTable();
+        $colunaNome = Schema::hasColumn($tabela, 'nome') ? 'nome' : 'name';
+        $colunaSenha = Schema::hasColumn($tabela, 'senha') ? 'senha' : 'password';
+
         return User::unguarded(fn () => User::firstOrCreate(
             ['email' => self::EMAIL_SISTEMA],
             [
-                'name' => 'Sistema',
-                'password' => Hash::make(Str::random(40)),
+                $colunaNome => 'Sistema',
+                $colunaSenha => Hash::make(Str::random(40)),
             ],
         ));
     }
