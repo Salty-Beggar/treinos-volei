@@ -9,29 +9,13 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
-/**
- * Biblioteca de treinos prontos.
- *
- * Cadastra treinos de vôlei pré-prontos, criados pelo próprio sistema.
- * Os treinos ficam ligados a um usuário especial chamado "Sistema".
- *
- * Pode ser rodado várias vezes sem duplicar nada:
- *   php artisan db:seed --class=BibliotecaTreinosSeeder
- */
+
 class BibliotecaTreinosSeeder extends Seeder
 {
     /** E-mail do usuário que representa o sistema. */
     public const EMAIL_SISTEMA = 'sistema@treinosvolei.com';
 
-    /**
-     * Lista de treinos prontos.
-     *
-     * tempo:      duração total do treino, em segundos
-     * series:     quantas séries
-     * intervalo:  descanso entre as séries, em segundos
-     * repeticoes: repetições por série
-     * video:      link para vídeos de exemplo do exercício
-     */
+    
     private const TREINOS = [
         ['nome' => 'Toque de bola na parede',          'tempo' => 600,  'series' => 3, 'intervalo' => 30, 'repeticoes' => 30],
         ['nome' => 'Manchete na parede',               'tempo' => 600,  'series' => 3, 'intervalo' => 30, 'repeticoes' => 30],
@@ -67,14 +51,6 @@ class BibliotecaTreinosSeeder extends Seeder
         }
     }
 
-    /**
-     * Busca o usuário "Sistema" ou cria se ainda não existir.
-     * A senha é aleatória porque ninguém deve fazer login com ele.
-     *
-     * O projeto tem bancos com nomes de coluna diferentes
-     * (nome/senha no Banco.sql, name/password nas migrations),
-     * então o seeder confere quais colunas existem antes de criar.
-     */
     private function usuarioSistema(): User
     {
         $tabela = (new User)->getTable();
