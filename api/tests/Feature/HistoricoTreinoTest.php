@@ -61,4 +61,76 @@ class HistoricoTreinoTest extends TestCase
 
         $this->assertModelMissing($registro);
     }
+
+    public function test_registra_um_treino_concluido(): void
+    {
+        $usuario = User::factory()->create();
+
+        $this->postJson('/api/historico', [
+            'user_id' => $usuario->id,
+            'nome' => 'Aproximação e ataque',
+            'duracao_minutos' => 40,
+        ])
+            ->assertCreated()
+            ->assertJsonPath('data.nome', 'Aproximação e ataque')
+            ->assertJsonPath('mensagem', 'Treino registrado no histórico!');
+
+        $registro = HistoricoTreino::sole();
+        $this->assertSame($usuario->id, $registro->user_id);
+        $this->assertNotNull($registro->data_execucao);
+    }
+
+    public function test_registrar_exige_os_campos_e_um_usuario_existente(): void
+    {
+        $this->postJson('/api/historico', ['user_id' => 999, 'duracao_minutos' => 0])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['user_id', 'nome', 'duracao_minutos']);
+
+        $this->assertDatabaseCount('historico_treino', 0);
+    }
+
+    public function test_mostra_um_registro(): void
+    {
+        $registro = HistoricoTreino::factory()->create(['nome' => 'Defesa em mergulho']);
+
+        $this->getJson("/api/historico/{$registro->id}")
+            ->assertOk()
+            ->assertJsonPath('data.id', $registro->id)
+            ->assertJsonPath('data.nome', 'Defesa em mergulho');
+    }
+
+    public function test_registro_inexistente_retorna_404(): void
+    {
+        $this->getJson('/api/historico/999')
+            ->assertNotFound()
+            ->assertJsonPath('message', 'Registro do histórico não encontrado.');
+    }
+
+    public function test_edita_um_registro_sem_trocar_o_dono(): void
+    {
+        $registro = HistoricoTreino::factory()->create(['duracao_minutos' => 20]);
+        $outroUsuario = User::factory()->create();
+
+        $this->putJson("/api/historico/{$registro->id}", [
+            'duracao_minutos' => 35,
+            'user_id' => $outroUsuario->id,
+        ])
+            ->assertOk()
+            ->assertJsonPath('data.duracao_minutos', 35);
+
+        $registro->refresh();
+        $this->assertSame(35, $registro->duracao_minutos);
+        $this->assertNotSame($outroUsuario->id, $registro->user_id);
+    }
+
+    public function test_apaga_um_registro(): void
+    {
+        $registro = HistoricoTreino::factory()->create();
+
+        $this->deleteJson("/api/historico/{$registro->id}")
+            ->assertOk()
+            ->assertJsonPath('mensagem', 'Registro removido do histórico!');
+
+        $this->assertModelMissing($registro);
+    }
 }

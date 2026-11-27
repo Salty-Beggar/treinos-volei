@@ -13,8 +13,6 @@ return new class extends Migration
     {
         Schema::create('historico_treino', function (Blueprint $table) {
             $table->id();
-            // foreignId gera BIGINT UNSIGNED, o mesmo tipo de users.id (criado com $table->id()).
-            // Com INT a chave estrangeira seria recusada pelo MySQL por incompatibilidade de tipo.
             $table->foreignId('user_id')
                 ->constrained('users', indexName: 'fk_historico_usuario')
                 ->cascadeOnDelete();
