@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('treinos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->string('nome');
             $table->integer('tempo');
             $table->integer('series');
