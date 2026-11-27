@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import './App.css'
-import { register } from './services/login'
+import { login, register } from './services/login'
 
 function BallMark({ small = false }) {
   return (
@@ -123,21 +123,30 @@ function App() {
     setPassword('')
   }
 
-  const handleLoginSubmit = (event) => {
+  const handleLoginSubmit = async (event) => {
     event.preventDefault()
-    const usersDB = JSON.parse(localStorage.getItem('@TreinoVolei:users_db')) || []
-    const validUser = usersDB.find((user) =>
-      user.email.trim().toLowerCase() === email.trim().toLowerCase() && user.password === password
-    )
-    if (validUser) {
-      localStorage.setItem('@TreinoVolei:token', `mock-token-${validUser.id}-${Date.now()}`)
-      localStorage.setItem('@TreinoVolei:user', JSON.stringify(validUser))
-      setCurrentUser(validUser)
-      setTreinos(getDemoTreinos(validUser.id))
-      setIsAuthenticated(true)
-    } else {
+    await login({
+      email,
+      password,
+    }).then((response) => {
+      console.log('tentativa login');
+      console.log(response);
+    }).catch((reason) => {
       alert('E-mail ou senha incorretos!')
-    }
+    });
+    // const usersDB = JSON.parse(localStorage.getItem('@TreinoVolei:users_db')) || []
+    // const validUser = usersDB.find((user) =>
+    //   user.email.trim().toLowerCase() === email.trim().toLowerCase() && user.password === password
+    // )
+    // if (validUser) {
+    //   localStorage.setItem('@TreinoVolei:token', `mock-token-${validUser.id}-${Date.now()}`)
+    //   localStorage.setItem('@TreinoVolei:user', JSON.stringify(validUser))
+    //   setCurrentUser(validUser)
+    //   setTreinos(getDemoTreinos(validUser.id))
+    //   setIsAuthenticated(true)
+    // } else {
+    //   alert('E-mail ou senha incorretos!')
+    // }
   }
 
   const handleRegister = async (event) => {
@@ -148,11 +157,7 @@ function App() {
       password,
     }).then((response) => {
       const newUser = response.data.data;
-      setCurrentUser(newUser)
-      setTreinos(getDemoTreinos(newUser.id))
-      setIsAuthenticated(true)
-      localStorage.setItem('@TreinoVolei:token', `mock-token-${newUser.id}-${Date.now()}`)
-      localStorage.setItem('@TreinoVolei:user', JSON.stringify(newUser))
+      toggleMode(true)
     });
     // const usersDB = JSON.parse(localStorage.getItem('@TreinoVolei:users_db')) || []
     // if (usersDB.some((user) => user.email.trim().toLowerCase() === email.trim().toLowerCase())) {

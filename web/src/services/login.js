@@ -7,3 +7,10 @@ export async function register(signal) {
 		...signal
 	});
 }
+
+export async function login(signal) {
+    console.log(signal);
+	return await api.post('/login', {
+		...signal
+	});
+}
