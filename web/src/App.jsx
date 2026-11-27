@@ -62,6 +62,7 @@ function App() {
   const [treinosError, setTreinosError] = useState('')
   const [treinosNotice, setTreinosNotice] = useState('')
   const [isAddTreinoOpen, setIsAddTreinoOpen] = useState(false)
+  const [busca, setBusca] = useState('')
   const [newTreino, setNewTreino] = useState({
     nome: '', categoria: 'Fundamentos', tempo: 20, series: 3, repeticoes: 10, intervalo: 60, descricao: '', video: ''
   })
@@ -195,6 +196,10 @@ const handleAddTreino = (event) => {
     video: newTreino.video.trim(),
   };
 
+   const treinosFiltrados = treinos.filter((treino) =>
+  treino.nome.toLowerCase().includes(busca.toLowerCase())
+);
+
   setTreinos((prevTreinos) => {
     const nextTreinos = [treinoAdicionado, ...prevTreinos];
     const storageKey = `@TreinoVolei:treinos_demo:${userId}`;
@@ -278,6 +283,17 @@ const handleAddTreino = (event) => {
                 </button>
                 <div className="progress-card"><div className="progress-ring"><span>3</span></div><div><strong>Meta semanal</strong><small>3 de 5 treinos</small></div></div>
               </div>
+
+               <div>
+                <input type="text" placeholder="Buscar treinos..." value={busca} onChange={(e) => setBusca(e.target.value)} />
+                <ul>
+                  {treinos.filter((treino) => treino.nome.toLowerCase().includes(busca.toLowerCase())).map((treino) => (
+                    <li key={treino.id}>{treino.nome}</li>
+                  ))}
+                </ul>
+              </div>
+
+
               <div className="section-heading"><h2>Treinos disponíveis</h2><span>{treinos.length} exercícios</span></div>
               {treinosError && <div className="list-message list-message--warning" role="status">{treinosError}</div>}
               {treinosNotice && <div className="list-message list-message--info" role="status">{treinosNotice}</div>}
