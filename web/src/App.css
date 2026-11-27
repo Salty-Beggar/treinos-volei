@@ -411,6 +411,71 @@
   padding: 12px 14px;
 }
 
+.workout-detail-view {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.workout-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: transparent;
+  color: #68716b;
+  margin: 0 0 18px;
+  padding: 8px 0;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.workout-back-button:hover { color: var(--ink); }
+.workout-back-button svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.workout-detail-card {
+  border: 1px solid #dde2da;
+  border-radius: 14px;
+  background: #fff;
+  padding: clamp(22px, 4vw, 36px);
+}
+
+.workout-detail-heading h1 {
+  margin: 14px 0 8px;
+  color: var(--ink);
+  font-size: clamp(28px, 4vw, 38px);
+  line-height: 1.15;
+  letter-spacing: -1.3px;
+}
+
+.workout-detail-heading > p {
+  color: #929993;
+  margin: 0;
+  font-size: 12px;
+}
+
+.workout-detail-heading > .workout-detail-description {
+  max-width: 680px;
+  color: #68716b;
+  margin-top: 20px;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.training-stats.workout-detail-stats {
+  max-width: 620px;
+  margin: 28px 0 0;
+}
+
+.workout-video-link {
+  display: inline-block;
+  margin-top: 22px;
+  color: #506d18;
+  font-size: 12px;
+  font-weight: 900;
+  text-underline-offset: 3px;
+}
+
 .training-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

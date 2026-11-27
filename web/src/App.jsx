@@ -57,6 +57,7 @@ function App() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [treinos, setTreinos] = useState([])
+  const [selectedTreino, setSelectedTreino] = useState(null)
   const [treinosLoading, setTreinosLoading] = useState(true)
   const [treinosError, setTreinosError] = useState('')
   const [treinosNotice, setTreinosNotice] = useState('')
@@ -159,6 +160,7 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem('@TreinoVolei:token')
     localStorage.removeItem('@TreinoVolei:user')
+    setSelectedTreino(null)
     setCurrentUser({ id: null, name: 'Atleta', type: 'player' })
     setIsAuthenticated(false)
     setName('')
@@ -192,6 +194,32 @@ function App() {
         </header>
 
         <section className="dashboard-content">
+          {selectedTreino ? (
+            <section className="workout-detail-view" aria-labelledby="workout-detail-title">
+              <button type="button" className="workout-back-button" onClick={() => setSelectedTreino(null)}>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M10 17l-5-5 5-5" /></svg>
+                Voltar para os treinos
+              </button>
+              <article className="workout-detail-card">
+                <div className="workout-detail-heading">
+                  <span className="category">{selectedTreino.categoria || 'Treino'}</span>
+                  <h1 id="workout-detail-title">{selectedTreino.nome}</h1>
+                  <p>Preparado por {selectedTreino.creator?.name || getCreatorName(selectedTreino.user_id)}</p>
+                  {selectedTreino.descricao && <p className="workout-detail-description">{selectedTreino.descricao}</p>}
+                </div>
+                <div className="training-stats workout-detail-stats">
+                  <div><Icon name="clock" /><span>Duração<strong>{selectedTreino.tempo} min</strong></span></div>
+                  <div><Icon name="series" /><span>Séries<strong>{selectedTreino.series}x</strong></span></div>
+                  <div><Icon name="repeat" /><span>Repetições<strong>{selectedTreino.repeticoes}</strong></span></div>
+                  <div><Icon name="timer" /><span>Intervalo<strong>{selectedTreino.intervalo}s</strong></span></div>
+                </div>
+                {typeof selectedTreino.video === 'string' && /^https?:\/\//.test(selectedTreino.video) && (
+                  <a className="workout-video-link" href={selectedTreino.video} target="_blank" rel="noreferrer">Assistir vídeo do treino</a>
+                )}
+              </article>
+            </section>
+          ) : (
+            <>
           <div className="welcome-row">
             <div><p className="eyebrow">Seu plano de hoje</p><h1>Olá, {currentUser.name.split(' ')[0]}.</h1><p>Escolha um treino e continue evoluindo.</p></div>
             <div className="progress-card"><div className="progress-ring"><span>3</span></div><div><strong>Meta semanal</strong><small>3 de 5 treinos</small></div></div>
@@ -216,10 +244,12 @@ function App() {
                     <div><Icon name="repeat" /><span>Repetições<strong>{treino.repeticoes}</strong></span></div>
                     <div><Icon name="timer" /><span>Intervalo<strong>{treino.intervalo}s</strong></span></div>
                   </div>
-                  <button type="button" className="start-button"><span>Iniciar treino</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5" /></svg></button>
+                  <button type="button" className="start-button" onClick={() => setSelectedTreino(treino)}><span>Iniciar treino</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5" /></svg></button>
                 </article>
               ))}
             </div>
+          )}
+            </>
           )}
         </section>
       </main>
