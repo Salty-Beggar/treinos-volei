@@ -21,7 +21,7 @@ class UserController extends Controller
 
         if ($user && $senha === $user->senha) {
             auth()->login($user);
-            return response()->json(['message' => 'Login realizado com sucesso!']);
+            return response()->json(['message' => 'Login realizado com sucesso!', 'data' => $user]);
         }
         else {
             return response()->json(['message' => 'Usuário ou senha incorretos.'], 401);
@@ -52,6 +52,6 @@ class UserController extends Controller
             'senha' => $senha
         ]);
 
-        return response()->json(['message' => 'Usuário cadastrado com sucesso!']);
+        return response()->json(['message' => 'Usuário cadastrado com sucesso!', 'data' => $user]);
     }
 }

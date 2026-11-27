@@ -129,10 +129,16 @@ function App() {
       email,
       password,
     }).then((response) => {
-      console.log('tentativa login');
-      console.log(response);
+      let currUser = response.data.data;
+      currUser = {
+        ...currUser,
+        name: currUser.nome,
+      };
+      setCurrentUser(currUser);
+      setTreinos(getDemoTreinos(currUser.id));
+      setIsAuthenticated(true);
     }).catch((reason) => {
-      alert('E-mail ou senha incorretos!')
+      alert('E-mail ou senha incorretos!!!')
     });
     // const usersDB = JSON.parse(localStorage.getItem('@TreinoVolei:users_db')) || []
     // const validUser = usersDB.find((user) =>
