@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import './App.css'
+import { login, register } from './services/login'
 
 function BallMark({ small = false }) {
   return (
@@ -123,38 +124,58 @@ function App() {
     setPassword('')
   }
 
-  const handleLoginSubmit = (event) => {
+  const handleLoginSubmit = async (event) => {
     event.preventDefault()
-    const usersDB = JSON.parse(localStorage.getItem('@TreinoVolei:users_db')) || []
-    const validUser = usersDB.find((user) =>
-      user.email.trim().toLowerCase() === email.trim().toLowerCase() && user.password === password
-    )
-    if (validUser) {
-      localStorage.setItem('@TreinoVolei:token', `mock-token-${validUser.id}-${Date.now()}`)
-      localStorage.setItem('@TreinoVolei:user', JSON.stringify(validUser))
-      setCurrentUser(validUser)
-      setTreinos(getDemoTreinos(validUser.id))
-      setIsAuthenticated(true)
-    } else {
-      alert('E-mail ou senha incorretos!')
-    }
+    await login({
+      email,
+      password,
+    }).then((response) => {
+      let currUser = response.data.data;
+      currUser = {
+        ...currUser,
+        name: currUser.nome,
+      };
+      setCurrentUser(currUser);
+      setTreinos(getDemoTreinos(currUser.id));
+      setIsAuthenticated(true);
+    }).catch((reason) => {
+      alert('E-mail ou senha incorretos!!!')
+    });
+    // const usersDB = JSON.parse(localStorage.getItem('@TreinoVolei:users_db')) || []
+    // const validUser = usersDB.find((user) =>
+    //   user.email.trim().toLowerCase() === email.trim().toLowerCase() && user.password === password
+    // )
+    // if (validUser) {
+    //   localStorage.setItem('@TreinoVolei:token', `mock-token-${validUser.id}-${Date.now()}`)
+    //   localStorage.setItem('@TreinoVolei:user', JSON.stringify(validUser))
+    //   setCurrentUser(validUser)
+    //   setTreinos(getDemoTreinos(validUser.id))
+    //   setIsAuthenticated(true)
+    // } else {
+    //   alert('E-mail ou senha incorretos!')
+    // }
   }
 
-  const handleRegister = (event) => {
+  const handleRegister = async (event) => {
     event.preventDefault()
-    const usersDB = JSON.parse(localStorage.getItem('@TreinoVolei:users_db')) || []
-    if (usersDB.some((user) => user.email.trim().toLowerCase() === email.trim().toLowerCase())) {
-      alert('Este e-mail já está cadastrado!')
-      return
-    }
-    const newUser = { id: Date.now(), name, email: email.trim(), password, type: userType }
-    usersDB.push(newUser)
-    localStorage.setItem('@TreinoVolei:users_db', JSON.stringify(usersDB))
-    localStorage.setItem('@TreinoVolei:token', `mock-token-${newUser.id}-${Date.now()}`)
-    localStorage.setItem('@TreinoVolei:user', JSON.stringify(newUser))
-    setCurrentUser(newUser)
-    setTreinos(getDemoTreinos(newUser.id))
-    setIsAuthenticated(true)
+    await register({
+      name,
+      email,
+      password,
+    }).then((response) => {
+      const newUser = response.data.data;
+      toggleMode(true)
+    });
+    // const usersDB = JSON.parse(localStorage.getItem('@TreinoVolei:users_db')) || []
+    // if (usersDB.some((user) => user.email.trim().toLowerCase() === email.trim().toLowerCase())) {
+    //   alert('Este e-mail já está cadastrado!')
+    //   return
+    // }
+    // const newUser = { id: Date.now(), name, email: email.trim(), password, type: userType }
+    // usersDB.push(newUser)
+    // localStorage.setItem('@TreinoVolei:users_db', JSON.stringify(usersDB))
+    // localStorage.setItem('@TreinoVolei:token', `mock-token-${newUser.id}-${Date.now()}`)
+    // localStorage.setItem('@TreinoVolei:user', JSON.stringify(newUser))
   }
 
   const handleLogout = () => {

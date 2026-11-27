@@ -12,7 +12,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->validateCsrfTokens(
+            except: [
+                '*'
+            ]
+        );
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // Erros nas rotas /api sempre em JSON (sem redirecionar para uma página).
