@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import './App.css'
+import { register } from './services/login'
 
 function BallMark({ small = false }) {
   return (
@@ -139,21 +140,30 @@ function App() {
     }
   }
 
-  const handleRegister = (event) => {
+  const handleRegister = async (event) => {
     event.preventDefault()
-    const usersDB = JSON.parse(localStorage.getItem('@TreinoVolei:users_db')) || []
-    if (usersDB.some((user) => user.email.trim().toLowerCase() === email.trim().toLowerCase())) {
-      alert('Este e-mail já está cadastrado!')
-      return
-    }
-    const newUser = { id: Date.now(), name, email: email.trim(), password, type: userType }
-    usersDB.push(newUser)
-    localStorage.setItem('@TreinoVolei:users_db', JSON.stringify(usersDB))
-    localStorage.setItem('@TreinoVolei:token', `mock-token-${newUser.id}-${Date.now()}`)
-    localStorage.setItem('@TreinoVolei:user', JSON.stringify(newUser))
-    setCurrentUser(newUser)
-    setTreinos(getDemoTreinos(newUser.id))
-    setIsAuthenticated(true)
+    await register({
+      name,
+      email,
+      password,
+    }).then((response) => {
+      const newUser = response.data.data;
+      setCurrentUser(newUser)
+      setTreinos(getDemoTreinos(newUser.id))
+      setIsAuthenticated(true)
+      localStorage.setItem('@TreinoVolei:token', `mock-token-${newUser.id}-${Date.now()}`)
+      localStorage.setItem('@TreinoVolei:user', JSON.stringify(newUser))
+    });
+    // const usersDB = JSON.parse(localStorage.getItem('@TreinoVolei:users_db')) || []
+    // if (usersDB.some((user) => user.email.trim().toLowerCase() === email.trim().toLowerCase())) {
+    //   alert('Este e-mail já está cadastrado!')
+    //   return
+    // }
+    // const newUser = { id: Date.now(), name, email: email.trim(), password, type: userType }
+    // usersDB.push(newUser)
+    // localStorage.setItem('@TreinoVolei:users_db', JSON.stringify(usersDB))
+    // localStorage.setItem('@TreinoVolei:token', `mock-token-${newUser.id}-${Date.now()}`)
+    // localStorage.setItem('@TreinoVolei:user', JSON.stringify(newUser))
   }
 
   const handleLogout = () => {
